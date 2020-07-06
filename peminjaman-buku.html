@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Peminjaman Buku</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+</head>
+
+<body onload="readPeminjaman()">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">PETUGAS PERPUS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kelola-buku.html">Kelola Buku</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kelola-anggota.html">Kelola Anggota</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kelola-petugas.html">Kelola Petugas</a>
+                    </li>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Transaksi
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="peminjaman-buku.html">Peminjaman Buku</a>
+                            <a class="dropdown-item" href="pengembalian-buku.html">Pengembalian Buku</a>
+                        </div>
+                    </li>
+                </ul>
+                <span class="text-light ml-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Hi, <span id="displayUsername"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="profil-saya.html">Profil Saya</a>
+                                <div class="px-2">
+                                    <hr class="">
+                                </div>
+                                <a class="dropdown-item" href="" id="logout">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <p class="h2">Peminjaman Buku</p>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4" id="firstSection">
+                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                    data-target="#modalTambahPeminjaman">
+                    Tambah Peminjaman Buku
+                </button>
+                <button type="button" class="btn btn-danger btn-lg btn-block mb-5" onclick="print()">
+                    Cetak Laporan Peminjaman Buku
+                </button>
+                <div class="card">
+                    <div class="card-header">Filter</div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="urutkan">Urutkan berdasarkan</label>
+                            <select name="urutkan" id="urutkan" class="form-control">
+                                <option value="tgl_peminjaman">Tanggal Peminjaman</option>
+                                <option value="id_anggota">ID Anggota</option>
+                                <option value="status">Status</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" id="filter">Terapkan</button>
+                    </div>
+                </div>
+
+                <!-- Table Untuk Struk Peminjaman Buku -->
+                <div class="d-none">
+                    <table class="table table-bordered" id="table-struk">
+                        <tr>
+                            <td>ID Peminjaman</td>
+                            <td id="struk-id-peminjaman"></td>
+                        </tr>
+                        <tr>
+                            <td>Penanggung Jawab</td>
+                            <td id="struk-username">Username</td>
+                        </tr>
+                        <tr>
+                            <td>ID Anggota</td>
+                            <td id="struk-id-anggota">ID Anggota</td>
+                        </tr>
+                        <tr>
+                            <td>Nama Anggota</td>
+                            <td id="struk-nama-anggota">Nama Anggota</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td id="struk-status">Status</td>
+                        </tr>
+                        <tr>
+                            <td>Meminjam</td>
+                            <td id="struk-pinjam">3 Eksemplar</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Peminjaman</td>
+                            <td id="struk-tgl-peminjaman">3 Eksemplar</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Pengembalian</td>
+                            <td id="struk-tgl-pengembalian">3 Eksemplar</td>
+                        </tr>
+                    </table>
+
+                    <table class="table table-striped" id="table-daftar-pinjam">
+                        <thead>
+                            <tr>
+                                <th colspan="4">Daftar Buku</th>
+                            </tr>
+                            <tr class='warning'>
+                                <th>No</th>
+                                <th>ID Buku</th>
+                                <th>Judul Buku</th>
+                                <th>Jumlah Pinjam</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-daftar-struk-buku">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal Tambah Peminjaman -->
+            <div class="modal fade" id="modalTambahPeminjaman" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Form Tambah Peminjaman</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-success" role="alert">
+                                            <h4 class="alert-heading">Informasi Penting Peminjaman Buku!</h4>
+                                            <p>Peminjaman Buku dapat dilakukan disini, berikut beberapa poin yang perlu
+                                                diperhatikan :</p>
+                                            <ul>
+                                                <li>Peminjaman Buku memiliki batas waktu peminjaman, yaitu 7 hari dari
+                                                    waktu
+                                                    peminjaman</li>
+                                                <li>Peminjaman Buku memiliki batas jumlah peminjaman, yaitu maksimal 3
+                                                    jenis buku yang ingin dipinjam</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="id_anggota">ID Anggota</label>
+                                                            <select name="id_anggota" id="id_anggota"
+                                                                class="form-control select2">
+                                                                <option value="">Pilih...</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="nama_anggota">Nama Anggota</label>
+                                                            <input type="text" name="nama_anggota" id="nama_anggota"
+                                                                class="form-control" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 mt-3 mb-3">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="id_buku">ID Buku</label>
+                                                            <select name="id_buku" id="id_buku"
+                                                                class="form-control input-lg select2">
+                                                                <option value="">Pilih...</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="judul_buku">Judul Buku</label>
+                                                            <input type="text" name="judul_buku" id="judul_buku"
+                                                                class="form-control" readonly>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="stok">Stok</label>
+                                                                    <input type="number" name="stok" id="stok"
+                                                                        class="form-control" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="jumlah_pinjam">Jumlah Pinjam</label>
+                                                                    <input type="number" name="jumlah_pinjam"
+                                                                        id="jumlah_pinjam" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-success btn-block"
+                                                            id="btn-keranjang">Masukan ke
+                                                            keranjang</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="tgl_peminjaman">Tanggal
+                                                                        Peminjaman</label>
+                                                                    <input type="text" name="tgl_peminjaman"
+                                                                        id="tgl_peminjaman" class="form-control"
+                                                                        readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="tgl_pengembalian">Tanggal
+                                                                        Pengembalian</label>
+                                                                    <input type="text" name="tgl_pengembalian"
+                                                                        id="tgl_pengembalian" class="form-control"
+                                                                        readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mt-3">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        Keranjang
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table class="table table-borderless d-none" id="table-title">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">ID Buku</th>
+                                                                    <th scope="col" style="width: 50%;">Judul Buku</th>
+                                                                    <th class="" scope="col">Jumlah</th>
+                                                                    <th class="" scope="col">Aksi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="table-keranjang">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="btn-pinjam">Tambah Peminjaman</button>
+                                <button type="button" class="btn btn-danger" id="btn-pinjam-struk">Tambah Peminjaman
+                                    dan Cetak Struk</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Detail Peminjaman -->
+            <div class="modal fade" id="modalDetailPeminjaman" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Detail Peminjaman</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="tampil-id-peminjaman">ID Peminjaman</label>
+                                                            <input type="text" name="tampil-id-peminjaman"
+                                                                id="tampil-id-peminjaman" class="form-control" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tampil-status">Status</label>
+                                                            <input type="text" name="tampil-status" id="tampil-status"
+                                                                class="form-control" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tampil-username">Penanggung Jawab</label>
+                                                            <input type="text" name="tampil-username"
+                                                                id="tampil-username" class="form-control" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mt-3 mb-3">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="tampil-id-anggota">ID Anggota</label>
+                                                            <input type="text" name="tampil-id-anggota"
+                                                                id="tampil-id-anggota" class="form-control" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tampil-nama-anggota">Nama Anggota</label>
+                                                            <input type="text" name="tampil-nama-anggota"
+                                                                id="tampil-nama-anggota" class="form-control" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tampil-kelas-anggota">Kelas</label>
+                                                            <input type="text" name="tampil-kelas-anggota"
+                                                                id="tampil-kelas-anggota" class="form-control" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tampil-no-hp-anggota">No Handphone</label>
+                                                            <input type="text" name="tampil-no-hp-anggota"
+                                                                id="tampil-no-hp-anggota" class="form-control" readonly>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tampil-email-anggota">E-mail</label>
+                                                            <input type="text" name="tampil-email-anggota"
+                                                                id="tampil-email-anggota" class="form-control" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="tampil-tgl-peminjaman">Tanggal
+                                                                        Peminjaman</label>
+                                                                    <input type="text" name="tampil-tgl-peminjaman"
+                                                                        id="tampil-tgl-peminjaman" class="form-control"
+                                                                        readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <label for="tampil-tgl-pengembalian">Tanggal
+                                                                        Pengembalian</label>
+                                                                    <input type="text" name="tampil-tgl-pengembalian"
+                                                                        id="tampil-tgl-pengembalian"
+                                                                        class="form-control" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mt-3 mb-3">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        Daftar Buku yang dipinjam
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table class="table table-borderless">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col" style="width: 25%;">Thumbnail Buku
+                                                                    </th>
+                                                                    <th scope="col" style="width: 25%;">ID Buku</th>
+                                                                    <th scope="col" style="width: 50%;">Judul Buku</th>
+                                                                    <th class="text-right" scope="col">Jumlah</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="table-daftar-buku">
+
+                                                            </tbody>
+
+                                                        </table>
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <div class="float-right mr-2">
+                                                            Total Buku : <span id="total-buku"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Kembali</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8" id="cardSection">
+
+            </div>
+
+            <!-- Kerangka Table untuk Report -->
+            <div class="d-none">
+                <table id="my-table" class="table table-striped">
+                    <colgroup>
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="20%">
+                    </colgroup>
+                    <thead>
+                        <tr class='warning'>
+                            <th>ID Peminjaman</th>
+                            <th>ID Anggota</th>
+                            <th>Meminjam</th>
+                            <th>Tanggal Peminjaman</th>
+                            <th>Tanggal Pengembalian</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-storage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="js/myfirebase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/peminjaman-buku.js"></script>
+    <script>
+        // In your Javascript (external .js resource or <script> tag)
+        $(document).ready(function () {
+            $('.select2').select2({
+                theme: "bootstrap"
+            });
+        });
+    </script>
+</body>
+
+</html>

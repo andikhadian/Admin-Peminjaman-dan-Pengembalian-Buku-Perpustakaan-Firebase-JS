@@ -1,0 +1,55 @@
+<form action="" class="border rounded p-4 mb-4" id="form">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="Enter title" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" id="desc" placeholder="Enter Description" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="penerbit">Penerbit</label>
+        <input type="text" id="penerbit" placeholder="Enter Penerbit" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="pengarang">Pengarang</label>
+        <input type="text" id="pengarang" placeholder="Enter Pengarang" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="stok">Stok</label>
+        <input type="number" id="stok" placeholder="Enter Stok" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="File">Gambar</label>
+        <input type="file" id="image" placeholder="Enter File" class="form-control pb-5 pt-3">
+    </div>
+
+    <button type="submit" id="button1" class="btn btn-primary btn-block">Tambah Buku</button>
+    <!-- <button type="button" onclick="generatePDF()" class="btn btn-danger">Export to PDF</button> -->
+    <button style="display: none;" class="btn btn-warning" id="button2">Ubah Buku</button>
+    <button style="display: none;" class="btn btn-danger" id="button3">Cancel</button>
+</form>
+
+
+<!-- table -->
+<script>
+    var fragment = document.createDocumentFragment();
+    var table = document.createElement("table");
+
+    var query = firebase.database().ref("Buku");
+
+    query.once("value").then(function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+            var tr = document.createElement("tr");
+            var trValues = [childSnapshot.key, childSnapshot.val().title, childSnapshot.val().stok, childSnapshot.val().penerbit,
+            childSnapshot.val().pengarang];
+            var Values = childSnapshot.val();
+
+            for (var i = 0; i < trValues.length; i++) {
+                var td = document.createElement("td"); console.log(trValues[i]);
+                td.textContent = trValues[i]; tr.appendChild(td);
+            } table.appendChild(tr);
+        });
+    }); fragment.appendChild(table);
+    document.body.appendChild(fragment);
+</script>
