@@ -64,6 +64,7 @@ function createAnggota(nama, jenis_kelamin, kelas, no_hp, email, image) {
             no_hp: no_hp,
             email: email,
             search: name,
+            tgl_dibuat: dateNow(),
         }
 
         let db = firebase.database().ref("Anggota/" + counter);
