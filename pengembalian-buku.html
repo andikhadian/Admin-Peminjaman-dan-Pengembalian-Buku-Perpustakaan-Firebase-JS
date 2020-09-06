@@ -168,6 +168,15 @@
                                 <div class="row">
                                     <div class="col-md-5">
                                         <div class="row">
+                                            <div class="col-lg-12 mb-3">
+                                                <div class="card">
+                                                    <div class="card-header">Tanggal Hari Ini</div>
+                                                    <div class="card-body">
+                                                        <input type="text" name="tanggal_hari_ini" id="tanggal_hari_ini"
+                                                            class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-lg-12">
                                                 <div class="card">
                                                     <div class="card-body">
@@ -177,6 +186,13 @@
                                                                 class="form-control select2">
                                                                 <option value="">Pilih...</option>
                                                             </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="lihat-status-peminjaman">Status
+                                                                Peminjaman</label>
+                                                            <input type="text" name="lihat-status-peminjaman"
+                                                                id="lihat-status-peminjaman" class="form-control"
+                                                                readonly>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
@@ -283,9 +299,9 @@
                                                     <div class="card-body" id="hitung-denda">
                                                         <div class="form-group">
                                                             <label for="denda-keterlambatan">
-                                                                Keterlambatan (Rp 1000/hr)</label>
+                                                                Keterlambatan (Rp 1000/hari)</label>
                                                             <input type="number" name="denda-keterlambatan"
-                                                                id="denda-keterlambatan" class="form-control">
+                                                                id="denda-keterlambatan" class="form-control" readonly>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="denda-kondisi-buku">Total Denda Kondisi Buku
@@ -567,6 +583,7 @@
     <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-storage.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
     <script src="js/myfirebase.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/pengembalian-buku.js"></script>

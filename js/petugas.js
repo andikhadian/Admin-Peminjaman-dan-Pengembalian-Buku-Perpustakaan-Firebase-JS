@@ -120,7 +120,7 @@ function updatePetugas(id, nama, jenis_kelamin, username, no_hp, email) {
     }
 
     console.log('Sedang mengubah petugas...');
-    let db = firebase.database().ref("Petugas/" + id);
+    let db = firebase.database().ref("Petugas/" + username);
     db.update(data);
 
     console.log('Ubah Petugas Berhasil');
@@ -165,7 +165,7 @@ function readPetugas(filter = 'nama') {
                                 <p class="card-text">No Handphone : ${Value.no_hp}</p>
                                 <p class="card-text">Email : ${Value.email}</p>
                                 <button class="btn btn-warning mt-4" onclick="showPetugas('${Value.id}', '${Value.nama}', '${Value.jenis_kelamin}', '${Value.username}', '${Value.no_hp}', '${Value.email}')" data-toggle="modal" data-target="#modalUbahPetugas">Ubah Petugas</button>
-                                <button class="btn btn-danger mt-4" onclick="deletePetugas('${Value.id}')">Hapus Petugas</button>
+                                <button class="btn btn-danger mt-4" onclick="deletePetugas('${Value.username}')">Hapus Petugas</button>
                             </div>
                         </div>
                     </div>
@@ -177,8 +177,8 @@ function readPetugas(filter = 'nama') {
 }
 
 // ! Delete Petugas (Belum coba delete gambar dari storage)
-function deletePetugas(id) {
-    let db = firebase.database().ref("Petugas/" + id);
+function deletePetugas(username) {
+    let db = firebase.database().ref("Petugas/" + username);
     let konfirmasi = confirm("Apakah anda yakin ingin menghapus data ini ?");
 
     if (konfirmasi) {

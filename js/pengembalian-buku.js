@@ -10,6 +10,7 @@ let data_stok_buku = {};
 
 date.setDate(date.getDate());
 let hari_ini = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+document.getElementById('tanggal_hari_ini').value = hari_ini;
 
 // ! Menampilkan Peminjaman ke dalam Combobox dan menampilkan semua data peminjaman
 db.ref("Peminjaman/").on("child_added", function (data) {
@@ -26,16 +27,37 @@ db.ref("Peminjaman/").on("child_added", function (data) {
         document.getElementById('denda-kondisi-buku').value = '';
 
         db.ref('Peminjaman/' + id_peminjaman).once('value').then(function (snapshot) {
+            var status_peminjaman = (snapshot.val() && snapshot.val().status) || 'Tidak Ditemukan'
             var tgl_peminjaman = (snapshot.val() && snapshot.val().tgl_peminjaman) || 'Tidak Ditemukan'
             var tgl_pengembalian = (snapshot.val() && snapshot.val().tgl_pengembalian) || 'Tidak Ditemukan'
             var username = (snapshot.val() && snapshot.val().username) || 'Tidak Ditemukan'
             var id_anggota = (snapshot.val() && snapshot.val().id_anggota) || 'Tidak Ditemukan'
 
+            document.getElementById("lihat-status-peminjaman").value = status_peminjaman;
             document.getElementById("lihat-tgl-peminjaman").value = tgl_peminjaman;
             document.getElementById("lihat-tgl-pengembalian").value = tgl_pengembalian;
             document.getElementById("lihat-username").value = username;
             document.getElementById("lihat-username").value = username;
             document.getElementById("lihat-id-anggota").value = id_anggota;
+
+            let parts_hari_ini = hari_ini.split('-', 3);
+            let parts_tgl_pengembalian = tgl_pengembalian.split('-', 3);
+            let tanggal_hari_ini = moment([parts_hari_ini[2], parts_hari_ini[1], parts_hari_ini[0]]);
+            let pengembalian = moment([parts_tgl_pengembalian[2], parts_tgl_pengembalian[1], parts_tgl_pengembalian[0]]);
+            let denda = 0;
+            let telat = 0;
+            if (tanggal_hari_ini > pengembalian) {
+                telat = tanggal_hari_ini.diff(pengembalian, 'days')
+                denda = telat * 1000
+            } else {
+                telat = 0;
+            }
+
+            console.log('Telat : ' + telat + ' Hari');
+            console.log('Denda : ' + denda);
+
+            document.getElementById('denda-keterlambatan').value = denda
+
 
             // ! Menampilkan nama anggota
             db.ref('Anggota/' + id_anggota).once('value').then(function (snapshot) {
@@ -138,11 +160,11 @@ document.getElementById('btn-kembali').addEventListener('click', (e) => {
         db.ref('Buku/' + id_buku).once('value').then(function (snapshot) {
             let id = (snapshot.val() && snapshot.val().id) || 'Tidak Ditemukan'
             let stok = (snapshot.val() && snapshot.val().stok) || 'Tidak Ditemukan'
-            hasil_stok = parseInt(stok) + jumlah_pinjam;
-            console.log(hasil_stok);
+            let hasil_stok = parseInt(stok) + jumlah_pinjam;
+            hasil_stok.toString();
 
             data_stok_buku = {
-                stok: hasil_stok
+                stok: hasil_stok.toString()
             }
 
             db.ref("Buku/" + id).update(data_stok_buku);
@@ -195,11 +217,11 @@ document.getElementById('btn-kembali-struk').addEventListener('click', (e) => {
         db.ref('Buku/' + id_buku).once('value').then(function (snapshot) {
             let id = (snapshot.val() && snapshot.val().id) || 'Tidak Ditemukan'
             let stok = (snapshot.val() && snapshot.val().stok) || 'Tidak Ditemukan'
-            hasil_stok = parseInt(stok) + jumlah_pinjam;
+            let hasil_stok = parseInt(stok) + jumlah_pinjam;
             console.log(hasil_stok);
 
             data_stok_buku = {
-                stok: hasil_stok
+                stok: hasil_stok.toString()
             }
 
             db.ref("Buku/" + id).update(data_stok_buku);

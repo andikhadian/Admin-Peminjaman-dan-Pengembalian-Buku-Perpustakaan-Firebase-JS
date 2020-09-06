@@ -154,7 +154,7 @@ function lihatKeranjang() {
         var stok = (snapshot.val() && snapshot.val().stok) || 'Tidak Ditemukan'
         let hasil_stok = stok - jumlah_pinjam;
         let data_stok = {
-            stok: hasil_stok,
+            stok: hasil_stok.toString(),
         }
 
         db.ref('Buku/' + id_buku).update(data_stok);
@@ -187,7 +187,7 @@ function deleteKeranjang(index, id, id_buku, jumlah_pinjam) {
         let hasil_stok = parseInt(stok) + parseInt(jumlah_pinjam);
 
         let data_stok = {
-            stok: hasil_stok,
+            stok: hasil_stok.toString(),
         }
 
         db.ref('Buku/' + id_buku).update(data_stok);
